@@ -1,12 +1,17 @@
-FROM mono:5
+FROM docker pull markadams/chromium-xvfb
 
-RUN echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list
-RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
-RUN apt-get update
-RUN apt-get -y install libxpm4 libxrender1 libgtk2.0-0 libnss3 libgconf-2-4
-RUN apt-get -y install xvfb gtk2-engines-pixbuf
-RUN apt-get -y install xfonts-cyrillic xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable
-RUN apt-get -y install google-chrome-stable
+ENV MONO_VERSION 5.14.0.177
+
+RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
+
+RUN echo "deb http://download.mono-project.com/repo/debian stable-jessie/snapshots/$MONO_VERSION main" > /etc/apt/sources.list.d/mono-official-stable.list \
+  && apt-get update \
+  && apt-get install -y mono-runtime \
+  && rm -rf /var/lib/apt/lists/* /tmp/*
+
+RUN apt-get update \
+  && apt-get install -y binutils curl mono-devel ca-certificates-mono fsharp mono-vbnc nuget referenceassemblies-pcl \
+  && rm -rf /var/lib/apt/lists/* /tmp/*
 
 WORKDIR /app
 COPY ./bin/Release .
