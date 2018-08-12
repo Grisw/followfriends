@@ -1,4 +1,4 @@
-FROM docker pull markadams/chromium-xvfb
+FROM markadams/chromium-xvfb
 
 ENV MONO_VERSION 5.14.0.177
 
